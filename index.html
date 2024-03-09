@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Criando um formulário com JSON Form</title>
+    <title>Formulário para Armazenar Informações em JSON</title>
     <link rel="stylesheet" style="text/css" href="deps/opt/bootstrap.css">
 </head>
 <body>
-    <h1>Criando um formulário com JSON Form</h1>
+    <h1>Formulário para Armazenar Informações em JSON</h1>
     <form></form>
     <div id="res" class="alert"></div>
     <script type="text/javascript" src="deps/jquery.min.js"></script>
@@ -16,21 +16,35 @@
     <script type="text/javascript">
         $('form').jsonForm({
             schema: {
-                name: {
+                nome: {
                     type: 'string',
                     title: 'Nome',
                     required: true
                 },
-                age: {
+                idade: {
                     type: 'number',
                     title: 'Idade'
+                },
+                email: {
+                    type: 'string',
+                    title: 'E-mail'
                 }
             },
             onSubmit: function (errors, values) {
                 if (errors) {
                     $('#res').html('<p>Desculpe, ocorreu um erro.</p>');
                 } else {
-                    $('#res').html('<p>Olá, ' + values.name + '.' + (values.age ? '<br/>Você tem ' + values.age + ' anos.' : '') + '</p>');
+                    // Criação do objeto JSON com as informações
+                    var infoJSON = {
+                        nome: values.nome,
+                        idade: values.idade,
+                        email: values.email
+                    };
+
+                    // Exibe o JSON no console (para fins de demonstração)
+                    console.log(infoJSON);
+
+                    $('#res').html('<p>Informações armazenadas com sucesso!</p>');
                 }
             }
         });
