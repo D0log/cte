@@ -1,52 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <meta charset="utf-8">
-    <title>Formulário para Armazenar Informações em JSON</title>
-    <link rel="stylesheet" style="text/css" href="deps/opt/bootstrap.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Cliente</title>
 </head>
 <body>
-    <h1>Formulário para Armazenar Informações em JSON</h1>
-    <form></form>
-    <div id="res" class="alert"></div>
-    <script type="text/javascript" src="deps/jquery.min.js"></script>
-    <script type="text/javascript" src="deps/underscore.js"></script>
-    <script type="text/javascript" src="deps/opt/jsv.js"></script>
-    <script type="text/javascript" src="lib/jsonform.js"></script>
-    <script type="text/javascript">
-        $('form').jsonForm({
-            schema: {
-                nome: {
-                    type: 'string',
-                    title: 'Nome',
-                    required: true
+    <h1>Formulário de Cliente</h1>
+    <form id="clienteForm">
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome"><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email"><br>
+        <label for="telefone">Telefone:</label><br>
+        <input type="tel" id="telefone" name="telefone"><br>
+        <button type="submit">Salvar Cliente</button>
+    </form>
+
+    <script>
+        document.getElementById('clienteForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o comportamento padrão de enviar o formulário
+
+            // Obter os valores do formulário
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+
+            // Construir o objeto JSON
+            const cliente = {
+                nome: nome,
+                email: email,
+                telefone: telefone
+            };
+
+            // Enviar os dados para o GitHub (ou seu backend) - Este é um exemplo simples
+            fetch('https://api.github.com/repos/seu-usuario/seu-repositorio/contents/cliente.json', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'token SEU_TOKEN_DE_ACESSO',
+                    'Content-Type': 'application/json',
                 },
-                idade: {
-                    type: 'number',
-                    title: 'Idade'
-                },
-                email: {
-                    type: 'string',
-                    title: 'E-mail'
-                }
-            },
-            onSubmit: function (errors, values) {
-                if (errors) {
-                    $('#res').html('<p>Desculpe, ocorreu um erro.</p>');
+                body: JSON.stringify({
+                    message: 'Adicionando novo cliente',
+                    content: btoa(JSON.stringify(cliente)), // Codificar o conteúdo em base64
+                    branch: 'main' // ou outra branch do seu repositório
+                })
+            })
+            .then(response => {
+                if (response.status === 200 || response.status === 201) {
+                    alert('Cliente salvo com sucesso!');
                 } else {
-                    // Criação do objeto JSON com as informações
-                    var infoJSON = {
-                        nome: values.nome,
-                        idade: values.idade,
-                        email: values.email
-                    };
-
-                    // Exibe o JSON no console (para fins de demonstração)
-                    console.log(infoJSON);
-
-                    $('#res').html('<p>Informações armazenadas com sucesso!</p>');
+                    alert('Erro ao salvar cliente. Por favor, tente novamente.');
                 }
-            }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Erro ao salvar cliente. Por favor, tente novamente.');
+            });
         });
     </script>
 </body>
