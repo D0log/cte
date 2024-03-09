@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,30 +33,27 @@
                 telefone: telefone
             };
 
-            // Enviar os dados para o GitHub (ou seu backend) - Este é um exemplo simples
-            fetch('https://api.github.com/repos/seu-usuario/seu-repositorio/contents/cliente.json', {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'token SEU_TOKEN_DE_ACESSO',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    message: 'Adicionando novo cliente',
-                    content: btoa(JSON.stringify(cliente)), // Codificar o conteúdo em base64
-                    branch: 'main' // ou outra branch do seu repositório
-                })
-            })
-            .then(response => {
-                if (response.status === 200 || response.status === 201) {
-                    alert('Cliente salvo com sucesso!');
-                } else {
-                    alert('Erro ao salvar cliente. Por favor, tente novamente.');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Erro ao salvar cliente. Por favor, tente novamente.');
-            });
+            // Armazenar os dados localmente
+            localStorage.setItem('cliente', JSON.stringify(cliente));
+
+            // Limpar o formulário
+            document.getElementById('nome').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('telefone').value = '';
+
+            // Informar ao usuário que o cliente foi salvo
+            alert('Cliente salvo com sucesso!');
+        });
+
+        // Recuperar os dados do cliente ao carregar a página, se existirem
+        document.addEventListener('DOMContentLoaded', function() {
+            const clienteSalvo = localStorage.getItem('cliente');
+            if (clienteSalvo) {
+                const cliente = JSON.parse(clienteSalvo);
+                document.getElementById('nome').value = cliente.nome;
+                document.getElementById('email').value = cliente.email;
+                document.getElementById('telefone').value = cliente.telefone;
+            }
         });
     </script>
 </body>
